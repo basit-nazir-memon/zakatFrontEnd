@@ -1,0 +1,172 @@
+{
+    "id": "",
+    "gender": "Male",
+    "name": "Name Complete",
+    "CNIC": "12323", // Unique
+    "Contact Number": "1231313",
+    "City": "",
+    "Area": "",
+    "Term": [
+        {
+            "Status": ['Widow', 'Orphan', 'Poor', 'Disabled', 'Patient', 'Student'],
+            "type": ["monthly", "yearly", "Occasionly"],
+            "AmountTerms": [
+                {
+                    "Reason": "",
+                    "AmountChange": 1233,
+                    "Date": "" 
+                }
+            ],
+            "CLosureReason": "",
+            "Start Date": "", 
+            "End Date": "" // May start again
+        }
+    ],
+    "currentTerm": 1,
+    "ExtraFA": [
+        {
+            "reason": "",
+            "Anount": 1231,
+            "Date": "",
+            "PicProof": ["img1URL", "img2URL"]
+        }
+    ],
+    "isAlive": false,
+    "familyImfo": {
+        "son": 1,
+        "daughter": 1,
+        "adopted": 1
+    },
+    "Profession": "",
+    "ModeOfPayment": "cash /online / Person",
+    "Bank": "",
+    "Accout#": ""
+},
+
+
+// Yearly + Montly Expenses
+{
+
+    "NextMonthChange": {
+        "Amount": ""
+    },
+    "history": [
+        "Year" : "",
+        "Month": "",
+        "Amount": "",
+        "Expenses": [ 
+            {
+                "Reason" : "",
+                "Date": "",
+                "PersonId": "",
+                "amount": 12000,
+                "Type": "Mothly / Extra FA / Extra Exepnses"
+            }
+        ]
+    ]
+}
+
+
+// Responsibile Distribution Person Table
+{
+    "Name": "",
+    "City": "",
+    "Area": "",
+    "CNIC": "",
+    "Bank": "",
+    "Accout#": "",
+    "Persons": [
+        // ids
+
+        // Option to select all the persons from the specifies Area and city
+    ],
+},
+
+
+// Extra Expenditure
+[
+    {
+        "Reason": "",
+        "Amount": ""
+    }
+],
+
+
+
+// USD to PKR Converion Table
+{
+    "Total Amount in PKR": '',
+    "Totak Amount in USD": '',
+
+    "conversionHistory": []
+    {
+        "Amount": 1323,
+        "Date": "",
+        "Currency": "USD / PKR",
+        "Type": "Convert / Recieve",
+        "Depositor": "",
+        "Convert": {
+            "Date": "",
+            "Rate": "",
+        },
+        "Reason": ""
+    }
+}
+
+
+
+// Donors
+{
+    [
+        {
+            "name": "",
+            "country": "",
+            "city": "",
+            "yearlyAmount": [
+                {
+                    "date": "", 
+                    "amount": 123,
+                    "type": "Zakat / Sadqah / Fitra / Kherat"
+                }
+            ],
+            "contactNumber": "",
+        }
+    ]
+}
+
+
+
+// Users
+{
+    "First Name": "",
+    "Last Name": "",
+    "Password": "",
+    "Email Address": "",
+    "Role": "",
+    "Phone Number": "",
+    "Profile Picture": "",
+    "Country": "",
+    "City": ""
+}
+
+// Demand List
+{
+    "PersonId": "",
+    "Need": "",
+    "Reason": "",
+    "Date": "",
+    "isApproved": false,
+    "viewers": [
+        // list of user IDs
+    ],
+    "Comments": [
+        {
+            "originator": "Id",// id of user,
+            "comment": "",
+            "reply": {
+                "replier": "",
+                "reply": ""
+            }
+        }
+    ]
+}
