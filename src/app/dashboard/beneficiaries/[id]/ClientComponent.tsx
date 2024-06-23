@@ -10,7 +10,11 @@ import { Card, CardContent, CardHeader, Divider } from '@mui/material';
 import { Anchor } from '@phosphor-icons/react';
 import Link from 'next/link';
 
-const ClientComponent = ({ id }) => {
+interface ClientComponentProps {
+    id: string;
+  }
+
+const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
     const [beneficiary, setBeneficiary] = React.useState(null);
     const [error, setError] = React.useState("");
 
