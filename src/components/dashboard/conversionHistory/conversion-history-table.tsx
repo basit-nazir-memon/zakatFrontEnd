@@ -85,6 +85,7 @@ export function ConversionHistoryTable({
               <TableCell>Conversion Date</TableCell>
               <TableCell>Conversion Rate</TableCell>
               <TableCell>Conversion Currency</TableCell>
+              <TableCell>Total Amount</TableCell>
               <TableCell>Reason</TableCell>
             </TableRow>
           </TableHead>
@@ -114,6 +115,7 @@ export function ConversionHistoryTable({
                   <TableCell>{row?.convert?.date ? dayjs(row.convert.date).format('MMM D, YYYY') : '-'}</TableCell>
                   <TableCell>{row?.convert?.rate ? row.convert.rate : '-'}</TableCell>
                   <TableCell>{row?.convert?.currency ? row.convert.currency : '-'}</TableCell>
+                  <TableCell>{row?.amount && row?.convert?.rate ? row.amount * row.convert.rate : '-'}</TableCell>
                   <TableCell>{row.reason}</TableCell>
                 </TableRow>
               );

@@ -13,6 +13,7 @@ import { CustomersTable } from '@/components/dashboard/customer/customers-table'
 import { User, UsersTable } from '@/components/dashboard/users/users-table';
 import { UsersFilters } from '@/components/dashboard/users/users-filters';
 import { AddUserButton } from './AddUserButton';
+import { envConfig } from '../../../../env';
 
 export default function UsersPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
@@ -24,7 +25,7 @@ export default function UsersPage(): React.JSX.Element {
     React.useEffect(() => {
         const fetchUsers = async () => {
         try {
-            const response = await fetch('http://localhost:5000/users', {
+            const response = await fetch(`${envConfig.url}/users`, {
             headers: {
                 'Authorization': 'Bearer YOUR_JWT_TOKEN_HERE' // Replace with actual token
             }

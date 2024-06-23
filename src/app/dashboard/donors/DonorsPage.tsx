@@ -20,10 +20,11 @@ export default function DonorsPage(): React.JSX.Element {
 
     React.useEffect(() => {
         const fetchUsers = async () => {
+        const token = localStorage.getItem('auth-token');
         try {
             const response = await fetch(`${envConfig.url}/donors`, {
             headers: {
-                'Authorization': 'Bearer YOUR_JWT_TOKEN_HERE' // Replace with actual token
+                'Authorization': `Bearer ${token}` // Replace with actual token
             }
             });
             if (!response.ok) {

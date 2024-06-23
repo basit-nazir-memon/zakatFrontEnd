@@ -14,7 +14,7 @@ import { envConfig } from '../../../../env';
 
 export default function BeneficiaryPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [beneficiary, setBeneficiary] = React.useState<Beneficiary[]>([]);
 
     const paginatedBeneficiary = applyPagination(beneficiary, page, rowsPerPage);
