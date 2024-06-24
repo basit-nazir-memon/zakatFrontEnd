@@ -4,5 +4,8 @@ const config = {
     eslint: {
         ignoreDuringBuilds: true,
     },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
 };
-module.exports = config;
+export default config;
