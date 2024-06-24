@@ -7,8 +7,6 @@ import Typography from '@mui/material/Typography';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import { envConfig } from '../../../../env';
-import { ExtraExpenditure, ExtraExpenditureTable } from '@/components/dashboard/extraExpenditure/extra-expenditure-table';
-import { ExtraExpensesFilters } from '@/components/dashboard/extraExpenditure/extra-expenditure-filters';
 import { DemandList, DemandListTable } from '@/components/dashboard/demandList/demand-list-table';
 import { AddDemandListButton } from './AddDemandListsButton';
 import { DemandListFilters } from '@/components/dashboard/demandList/demand-list-filters';

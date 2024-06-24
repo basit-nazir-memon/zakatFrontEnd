@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
-import { useRouter } from 'next/navigation';
 import { AddBeneficiaryButton } from './AddBeneficiaryButton';
 import { BeneficiaryFilters } from '@/components/dashboard/beneficiary/beneficiary-filters';
 import { Beneficiary, BeneficiaryTable } from '@/components/dashboard/beneficiary/beneficiary-table';

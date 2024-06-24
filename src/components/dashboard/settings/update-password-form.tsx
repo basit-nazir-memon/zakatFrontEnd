@@ -25,12 +25,18 @@ const schema = zod.object({
   path: ['confirmPassword'], // path of error
 });
 
+
+
 type Values = zod.infer<typeof schema>;
 
 const defaultValues: Values = {
   password: '',
   confirmPassword: '',
 };
+
+interface DataResponse {
+  error: string;
+}
 
 export function UpdatePasswordForm(): React.JSX.Element {
   const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
@@ -46,19 +52,19 @@ export function UpdatePasswordForm(): React.JSX.Element {
       return;
     }
 
-    const token = localStorage.getItem('auth-token');
+    const token : string | null = localStorage.getItem('auth-token');
 
     try {
-      const response = await fetch(`${envConfig.url}/update-password`, {
+      const response : Response = await fetch(`${envConfig.url}/update-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token ? token : ''}`
         },
         body: JSON.stringify(values),
       });
 
-      const data = await response.json();
+      const data : DataResponse = await response.json() as DataResponse;
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update password');
@@ -67,7 +73,10 @@ export function UpdatePasswordForm(): React.JSX.Element {
       setSuccessMessage('Password updated successfully');
       setErrorMessage(null);
     } catch (error) {
-      setErrorMessage(error.message);
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Server error. Please try again later.' };
     }
   };
 

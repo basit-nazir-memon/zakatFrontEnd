@@ -44,12 +44,17 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
   }, []);
 
   React.useEffect(() => {
-    checkSession().catch((err) => {
-      logger.error(err);
+    checkSession().catch((err: unknown) => {
+      if (err instanceof Error) {
+        logger.error(err.message);
+      } else {
+        logger.error('An unknown error occurred');
+      }
       // noop
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
   }, []);
+  
 
   return <UserContext.Provider value={{ ...state, checkSession }}>{children}</UserContext.Provider>;
 }

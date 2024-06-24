@@ -7,8 +7,6 @@ import Typography from '@mui/material/Typography';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import { envConfig } from '../../../../env';
-import { ExtraExpenditure, ExtraExpenditureTable } from '@/components/dashboard/extraExpenditure/extra-expenditure-table';
-import { ExtraExpensesFilters } from '@/components/dashboard/extraExpenditure/extra-expenditure-filters';
 import { ConversionHistory, ConversionHistoryTable } from '@/components/dashboard/conversionHistory/conversion-history-table';
 import { AddConversionHistoryButton } from './AddConversionHistoryButton';
 import { ConversionHistoryFilters } from '@/components/dashboard/conversionHistory/conversion-history-filters';

@@ -4,18 +4,54 @@ import * as React from 'react';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import { AccountDetailsForm } from '@/components/dashboard/account/account-details-form';
 import { envConfig } from '../../../../../env';
 import { Card, CardContent, CardHeader, Divider } from '@mui/material';
-import { Anchor } from '@phosphor-icons/react';
 import Link from 'next/link';
 
 interface ClientComponentProps {
     id: string;
-  }
+}
+
+interface ISchema {
+    gender: 'Male' | 'Female';
+    name: string;
+    CNIC?: string;
+    ContactNumber?: string;
+    City: string;
+    Area: string;
+    Term: Array<{
+        status: 'Widow' | 'Orphan' | 'Poor' | 'Disabled' | 'Patient' | 'Student';
+        type: 'Monthly' | 'Yearly' | 'Occasionally';
+        amountTerms: Array<{
+        reason?: string;
+        amountChange?: number;
+        date?: string;
+        }>;
+        closureReason?: string;
+        startDate?: string;
+        endDate?: string;
+    }>;
+    currentTerm?: number;
+    extraFA: Array<{
+        reason?: string;
+        amount?: number;
+        date?: string;
+        picProof?: string[];
+    }>;
+    isAlive?: boolean;
+    familyInfo: {
+        son?: number;
+        daughter?: number;
+        adopted?: number;
+    };
+    profession: string;
+    modeOfPayment: 'Cash' | 'Online' | 'Person';
+    bank?: string;
+    accountNumber?: string;
+}
 
 const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
-    const [beneficiary, setBeneficiary] = React.useState(null);
+    const [beneficiary, setBeneficiary] = React.useState<ISchema | null>(null);
     const [error, setError] = React.useState("");
 
     React.useEffect(() => {
@@ -169,7 +205,7 @@ const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
                             <Divider />
                             <CardContent>
                                 {
-                                    (beneficiary?.Term.length > 0) ? 
+                                    (beneficiary && beneficiary?.Term && beneficiary?.Term.length > 0) ? 
                                         beneficiary?.Term.map((term, idx) => {
                                             return (
                                             <Grid lg={6} md={12} xs={12}>
@@ -327,7 +363,7 @@ const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
                             <Divider />
                             <CardContent>
                                 {
-                                    (beneficiary?.extraFA.length > 0) ? 
+                                    (beneficiary && beneficiary?.extraFA && beneficiary?.extraFA.length > 0) ? 
                                         beneficiary?.extraFA.map((fa, idx) => {
                                             return (
                                             <Grid lg={6} md={12} xs={12}>

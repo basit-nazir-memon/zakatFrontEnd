@@ -1,12 +1,7 @@
 'use client';
 
 import type { User } from '@/types/user';
-
-function generateToken(): string {
-  const arr = new Uint8Array(12);
-  window.crypto.getRandomValues(arr);
-  return Array.from(arr, (v) => v.toString(16).padStart(2, '0')).join('');
-}
+import { envConfig } from '../../../env';
 
 const user = {
   id: 'USR-000',
@@ -36,53 +31,64 @@ export interface ResetPasswordParams {
   email: string;
 }
 
-class AuthClient {
+interface ErrorResponse {
+  msg: string;
+}
 
-  async signInWithOAuth(_: SignInWithOAuthParams): Promise<{ error?: string }> {
+interface SignInResponse {
+  token: string;
+}
+
+interface AuthResponse<T> {
+  error?: string;
+  data?: T;
+}
+
+class AuthClient {
+  async signInWithOAuth(_: SignInWithOAuthParams): Promise<AuthResponse<void>> {
     return { error: 'Social authentication not implemented' };
   }
 
-  async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
+  async signInWithPassword(params: SignInWithPasswordParams): Promise<AuthResponse<void>> {
     const { email, password } = params;
-  
+
     try {
-      const response = await fetch('http://localhost:5000/login', {
+      const response: Response = await fetch(`${envConfig.url}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData: ErrorResponse = await response.json() as ErrorResponse;
         return { error: errorData.msg || 'Invalid credentials' };
       }
-  
-      const data = await response.json();
+
+      const data: SignInResponse = await response.json() as SignInResponse;
+
       localStorage.setItem('auth-token', data.token);
-  
+
       return {};
     } catch (error) {
-      console.error('Error during sign-in:', error);
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
       return { error: 'Server error. Please try again later.' };
     }
   }
-  
 
-  async resetPassword(_: ResetPasswordParams): Promise<{ error?: string }> {
+  async resetPassword(_: ResetPasswordParams): Promise<AuthResponse<void>> {
     return { error: 'Password reset not implemented' };
   }
 
-  async updatePassword(_: ResetPasswordParams): Promise<{ error?: string }> {
+  async updatePassword(_: ResetPasswordParams): Promise<AuthResponse<void>> {
     return { error: 'Update reset not implemented' };
   }
 
-  async getUser(): Promise<{ data?: User | null; error?: string }> {
-    // Make API request
-
-    // We do not handle the API, so just check if we have a token in localStorage.
-    const token = localStorage.getItem('auth-token');
+  async getUser(): Promise<AuthResponse<User | null>> {
+    const token: string | null = localStorage.getItem('auth-token');
 
     if (!token) {
       return { data: null };
@@ -91,7 +97,7 @@ class AuthClient {
     return { data: user };
   }
 
-  async signOut(): Promise<{ error?: string }> {
+  async signOut(): Promise<AuthResponse<void>> {
     localStorage.removeItem('auth-token');
 
     return {};
