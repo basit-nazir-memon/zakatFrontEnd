@@ -138,6 +138,7 @@ export function AddBeneficiaryForm(): React.JSX.Element {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
           },
           body: JSON.stringify(values),
         });
@@ -197,7 +198,7 @@ export function AddBeneficiaryForm(): React.JSX.Element {
             )}
           />
 
-<Controller
+          <Controller
             control={control}
             name="ContactNumber"
             render={({ field }) => (

@@ -113,6 +113,20 @@
     }
 }
 
+{
+    "Total Amount in PKR": 0,
+    "Total Amount in USD": 0,
+
+    "transactionLogs": {
+
+        "Date": '',
+        "Amount": '', // could be both in + & -
+        "Currency": '',
+        "Title": "Beneficiary Amount Term Addition",
+        "Details": "Baneficiary Named Bilal Account Term was Added for this reson: 'Reason' "
+    }
+}
+
 
 
 // Donors

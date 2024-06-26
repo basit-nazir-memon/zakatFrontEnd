@@ -7,8 +7,6 @@ import Typography from '@mui/material/Typography';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import { envConfig } from '../../../../env';
-import { ExtraExpenditure, ExtraExpenditureTable } from '@/components/dashboard/extraExpenditure/extra-expenditure-table';
-import { ExtraExpensesFilters } from '@/components/dashboard/extraExpenditure/extra-expenditure-filters';
 import { MonthlyExpensesFilters } from '@/components/dashboard/monthlyExpenditure/monthly-expenditure-filters';
 import { Beneficiary, MonthlyExpensesTable } from '@/components/dashboard/monthlyExpenditure/monthly-expenditure-table';
 
@@ -24,7 +22,7 @@ export default function MonthlyExpendituresPage(): React.JSX.Element {
         try {
             const response = await fetch(`${envConfig.url}/monthly-expenses`, {
             headers: {
-                'Authorization': 'Bearer YOUR_JWT_TOKEN_HERE' // Replace with actual token
+                'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
             }
             });
             if (!response.ok) {

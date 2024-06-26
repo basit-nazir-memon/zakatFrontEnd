@@ -50,6 +50,7 @@ export function AddDemandListForm(): React.JSX.Element {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
                     },
                     body: JSON.stringify(values),
                 });

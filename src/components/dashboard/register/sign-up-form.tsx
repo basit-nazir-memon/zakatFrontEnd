@@ -60,6 +60,7 @@ export function SignUpForm(): React.JSX.Element {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
           },
           body: JSON.stringify(values),
         });
@@ -154,8 +155,8 @@ export function SignUpForm(): React.JSX.Element {
                   {...field}
                   label="Role"
                 >
-                  <MenuItem value="viewer">Viewer</MenuItem>
-                  <MenuItem value="editor">Editor</MenuItem>
+                  <MenuItem value="Viewer">Viewer</MenuItem>
+                  <MenuItem value="Editor">Editor</MenuItem>
                 </Select>
                 {errors.role ? <FormHelperText>{errors.role.message}</FormHelperText> : null}
               </FormControl>

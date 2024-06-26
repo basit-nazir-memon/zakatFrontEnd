@@ -18,6 +18,7 @@ import Typography from '@mui/material/Typography';
 import { useSelection } from '@/hooks/use-selection';
 import { Button } from '@mui/material';
 import { BeneficiaryTableButton } from './beneficiary-table-button';
+import { BeneficiaryTableEditButton } from './beneficiary-table-edit-button';
 
 function noop(): void {
   // do nothing
@@ -81,6 +82,7 @@ export function BeneficiaryTable({
               <TableCell>City</TableCell>
               <TableCell>Area</TableCell>
               <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -117,6 +119,9 @@ export function BeneficiaryTable({
                   <TableCell>{row?.Area}</TableCell>
                   <TableCell>
                     <BeneficiaryTableButton id={row._id}/>
+                  </TableCell>
+                  <TableCell>
+                    <BeneficiaryTableEditButton id={row._id}/>
                   </TableCell>
                 </TableRow>
               );

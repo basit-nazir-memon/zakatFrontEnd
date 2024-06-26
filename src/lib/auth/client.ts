@@ -37,6 +37,7 @@ interface ErrorResponse {
 
 interface SignInResponse {
   token: string;
+  avatar: string;
 }
 
 interface AuthResponse<T> {
@@ -69,6 +70,7 @@ class AuthClient {
       const data: SignInResponse = await response.json() as SignInResponse;
 
       localStorage.setItem('auth-token', data.token);
+      localStorage.setItem('avatar', data.avatar);
 
       return {};
     } catch (error) {

@@ -23,7 +23,7 @@ export default function ExtraExpendituresPage(): React.JSX.Element {
         try {
             const response = await fetch(`${envConfig.url}/extraexpenditures`, {
             headers: {
-                'Authorization': 'Bearer YOUR_JWT_TOKEN_HERE' // Replace with actual token
+                'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
             }
             });
             if (!response.ok) {
