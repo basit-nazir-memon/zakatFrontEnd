@@ -129,6 +129,23 @@
 
 
 
+{
+    "years":[
+        {
+            "year": 2024,
+            "months": {
+                "Jan": {
+                    "Amount": 1000,
+                    "Details": [
+                        accountTransactionID: 
+                    ]
+                }
+            }
+        }
+    ]
+}
+
+
 // Donors
 {
     [
