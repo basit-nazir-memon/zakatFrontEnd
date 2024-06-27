@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { config } from '@/config';
 import { AuthGuard } from '@/components/auth/auth-guard';
 import { AddConversionForm } from '@/components/dashboard/conversionHistory/add-conversion-history-page';
+import { AdminGuard } from '@/components/auth/admin-guard';
 
 
 export const metadata = { title: `Add Conversion History | ${config.site.name}` } satisfies Metadata;
@@ -11,7 +12,9 @@ export const metadata = { title: `Add Conversion History | ${config.site.name}` 
 export default function Page(): React.JSX.Element {
   return (
       <AuthGuard>
-        <AddConversionForm />
+        <AdminGuard>
+          <AddConversionForm />
+        </AdminGuard>
       </AuthGuard>
   );
 }

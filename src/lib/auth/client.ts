@@ -3,12 +3,13 @@
 import type { User } from '@/types/user';
 import { envConfig } from '../../../env';
 
-const user = {
+let user = {
   id: 'USR-000',
   avatar: '/assets/avatar.png',
   firstName: 'Sofia',
   lastName: 'Rivers',
   email: 'sofia@devias.io',
+  role: 'Viewer'
 } satisfies User;
 
 export interface SignUpParams {
@@ -36,10 +37,13 @@ interface ErrorResponse {
 }
 
 interface SignInResponse {
+  id: string;
   token: string;
   avatar: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  role: string;
 }
 
 interface AuthResponse<T> {
@@ -72,10 +76,13 @@ class AuthClient {
       const data: SignInResponse = await response.json() as SignInResponse;
 
       localStorage.setItem('auth-token', data.token);
-      localStorage.setItem('avatar', data.avatar);
-      localStorage.setItem('name', data.name);
-      localStorage.setItem('email', data.email);
 
+      user.id = data.id;
+      user.avatar = data.avatar;
+      user.email = data.email;
+      user.firstName = data.firstName;
+      user.lastName = data.lastName;
+      user.role = data.role;
 
       return {};
     } catch (error) {
@@ -102,6 +109,18 @@ class AuthClient {
     }
 
     return { data: user };
+  }
+
+  getUserSimple() {
+    return { data: user };
+  }
+
+  isAdmin() {
+    return user.role == "Admin";
+  }
+
+  isAdminOREditor() {
+    return (user.role == "Admin" || user.role == "Editor");
   }
 
   async signOut(): Promise<AuthResponse<void>> {

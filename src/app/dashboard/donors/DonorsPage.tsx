@@ -10,11 +10,13 @@ import { DonorsFilters } from '@/components/dashboard/donors/donors-filters';
 import { Donor, DonorsTable } from '@/components/dashboard/donors/donors-table';
 import { AddDonorButton } from './AddDonorButton';
 import { envConfig } from '../../../../env';
+import { useUser } from '@/hooks/use-user';
 
 export default function DonorsPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [users, setUsers] = React.useState<Donor[]>([]);
+    const { user, error, isLoading } = useUser();
 
     const paginatedUsers = applyPagination(users, page, rowsPerPage);
 
@@ -54,9 +56,13 @@ export default function DonorsPage(): React.JSX.Element {
                 </Button>
             </Stack>
             </Stack>
-            <div>
-                <AddDonorButton/>
-            </div>
+            { 
+                user?.role == "Admin" ? (
+                    <div>
+                        <AddDonorButton/>
+                    </div>
+                ) : ''
+            }
         </Stack>
         <DonorsFilters />
         <DonorsTable

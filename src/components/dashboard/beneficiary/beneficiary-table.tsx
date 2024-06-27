@@ -19,6 +19,8 @@ import { useSelection } from '@/hooks/use-selection';
 import { Button } from '@mui/material';
 import { BeneficiaryTableButton } from './beneficiary-table-button';
 import { BeneficiaryTableEditButton } from './beneficiary-table-edit-button';
+import { authClient } from '@/lib/auth/client';
+import { useUser } from '@/hooks/use-user';
 
 function noop(): void {
   // do nothing
@@ -59,6 +61,7 @@ export function BeneficiaryTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
+  const { user, error, isLoading } = useUser();
 
   const handlePageChange = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -94,8 +97,17 @@ export function BeneficiaryTable({
               <TableCell>Status</TableCell>
               <TableCell>City</TableCell>
               <TableCell>Area</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
+              
+              {
+                user?.role == "Admin" || user?.role == "Editor" ? (
+                  <TableCell></TableCell>
+                ) : ''
+              }
+              {
+                user?.role == "Admin" ? (
+                <TableCell></TableCell>
+                ) : ''
+              }
             </TableRow>
           </TableHead>
           <TableBody>
@@ -130,12 +142,20 @@ export function BeneficiaryTable({
                   <TableCell>{row?.isAlive ? 'Alive' : 'Deceased'}</TableCell>
                   <TableCell>{row?.City}</TableCell>
                   <TableCell>{row?.Area}</TableCell>
-                  <TableCell>
-                    <BeneficiaryTableButton id={row._id}/>
-                  </TableCell>
-                  <TableCell>
-                    <BeneficiaryTableEditButton id={row._id}/>
-                  </TableCell>
+                  {
+                    user?.role == "Admin" || user?.role == "Editor" ? (
+                      <TableCell>
+                        <BeneficiaryTableButton id={row._id}/>
+                      </TableCell>
+                    ) : ''
+                  }
+                  {
+                    user?.role == "Admin" ? (
+                      <TableCell>
+                        <BeneficiaryTableEditButton id={row._id}/>
+                      </TableCell>
+                    ) : ''
+                  }
                 </TableRow>
               );
             })}

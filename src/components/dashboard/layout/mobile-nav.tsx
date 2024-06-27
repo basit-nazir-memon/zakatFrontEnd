@@ -17,8 +17,9 @@ import { paths } from '@/paths';
 import { isNavItemActive } from '@/lib/is-nav-item-active';
 import { Logo } from '@/components/core/logo';
 
-import { navItems } from './config';
+import { getNavItems } from './config';
 import { navIcons } from './nav-icons';
+import { useUser } from '@/hooks/use-user';
 
 export interface MobileNavProps {
   onClose?: () => void;
@@ -28,6 +29,7 @@ export interface MobileNavProps {
 
 export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element {
   const pathname = usePathname();
+  const { user, error, isLoading } = useUser();
 
   return (
     <Drawer
@@ -63,7 +65,7 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
         </Box>
       </Stack>
       <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
-        {renderNavItems({ pathname, items: navItems })}
+        {renderNavItems({ pathname, items: getNavItems(user?.role) })}
       </Box>
     </Drawer>
   );

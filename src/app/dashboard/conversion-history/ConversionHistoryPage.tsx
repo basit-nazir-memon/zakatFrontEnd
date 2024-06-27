@@ -10,11 +10,13 @@ import { envConfig } from '../../../../env';
 import { ConversionHistory, ConversionHistoryTable } from '@/components/dashboard/conversionHistory/conversion-history-table';
 import { AddConversionHistoryButton } from './AddConversionHistoryButton';
 import { ConversionHistoryFilters } from '@/components/dashboard/conversionHistory/conversion-history-filters';
+import { useUser } from '@/hooks/use-user';
 
 export default function ConversionHistoryPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [users, setUsers] = React.useState<ConversionHistory[]>([]);
+    const { user, error, isLoading } = useUser();
 
     const paginatedUsers = applyPagination(users, page, rowsPerPage);
 
@@ -54,9 +56,13 @@ export default function ConversionHistoryPage(): React.JSX.Element {
                 </Button>
             </Stack>
             </Stack>
-            <div>
-                <AddConversionHistoryButton />
-            </div>
+            { 
+                user?.role == "Admin" ? (
+                    <div>
+                        <AddConversionHistoryButton />
+                    </div>
+                ) : '' 
+            }
         </Stack>
         <ConversionHistoryFilters />
         <ConversionHistoryTable

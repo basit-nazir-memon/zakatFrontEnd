@@ -9,6 +9,7 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { envConfig } from '../../../../env';
+import { useUser } from '@/hooks/use-user';
 
 interface Profile {
   firstName?: string;
@@ -29,6 +30,7 @@ interface AccountInfoProps {
 export function AccountInfo({ profile }: AccountInfoProps): React.JSX.Element {
   const [avatar, setAvatar] = React.useState<string | undefined>(profile?.avatar);
   const [isUploading, setIsUploading] = React.useState(false);
+  const { user } = useUser();
 
   React.useEffect(() => {
     if (profile?.avatar) {
@@ -59,6 +61,7 @@ export function AccountInfo({ profile }: AccountInfoProps): React.JSX.Element {
         }
 
         setAvatar(data.avatar);
+        
       } catch (error) {
         console.error('Error uploading avatar:', error.message);
       } finally {

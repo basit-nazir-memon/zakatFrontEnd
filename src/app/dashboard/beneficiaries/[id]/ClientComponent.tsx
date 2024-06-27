@@ -5,8 +5,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { envConfig } from '../../../../../env';
-import { Card, CardContent, CardHeader, Divider } from '@mui/material';
+import { Card, CardContent, CardHeader, Dialog, DialogContent, DialogTitle, Divider, IconButton } from '@mui/material';
 import Link from 'next/link';
+import { Cross, X, XCircle } from '@phosphor-icons/react/dist/ssr';
 
 interface ClientComponentProps {
     id: string;
@@ -53,6 +54,15 @@ interface ISchema {
 const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
     const [beneficiary, setBeneficiary] = React.useState<ISchema | null>(null);
     const [error, setError] = React.useState("");
+    const [openImage, setOpenImage] = React.useState<string | null>(null);
+
+    const handleImageClick = (imageSrc: string) => {
+        setOpenImage(imageSrc);
+    };
+    
+    const handleClose = () => {
+        setOpenImage(null);
+    };
 
     React.useEffect(() => {
         const fetchProfile = async () => {
@@ -204,11 +214,12 @@ const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
                             <CardHeader title="Terms Information" />
                             <Divider />
                             <CardContent>
+                                <Grid container spacing={3}>
                                 {
                                     (beneficiary && beneficiary?.Term && beneficiary?.Term.length > 0) ? 
                                         beneficiary?.Term.map((term, idx) => {
                                             return (
-                                            <Grid lg={6} md={12} xs={12}>
+                                            <Grid lg={6} md={6} xs={12}>
                                                 <Card>
                                                     <CardHeader title={`Term ${idx}`} />
                                                     <Divider />
@@ -314,45 +325,8 @@ const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
                                         : "No Term Records Exist"
                                     
                                 }
-                            </CardContent>
-                        </Card>
-                    </Grid>
-
-                    
-                    <Grid lg={6} md={6} xs={12}>
-                        <Card>
-                            <CardHeader title="Family Information" />
-                            <Divider />
-                            <CardContent>
-                                <Grid container spacing={3}>
-                                    <Grid container md={12} xs={12}>
-                                        <Grid md={6} xs={6}>
-                                            <Typography variant="subtitle1">Number of Sons</Typography>
-                                        </Grid>
-                                        <Grid md={6} xs={6}>
-                                            <Typography variant="body1">{beneficiary?.familyInfo?.son}</Typography>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid container md={12} xs={12}>
-                                        <Grid md={6} xs={6}>
-                                            <Typography variant="subtitle1">Number of Daughter</Typography>
-                                        </Grid>
-                                        <Grid md={6} xs={6}>
-                                            <Typography variant="body1">{beneficiary?.familyInfo?.daughter}</Typography>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid container md={12} xs={12}>
-                                        <Grid md={6} xs={6}>
-                                            <Typography variant="subtitle1">Number of Dependents / Adopted Child</Typography>
-                                        </Grid>
-                                        <Grid md={6} xs={6}>
-                                            <Typography variant="body1">{beneficiary?.familyInfo?.adopted}</Typography>
-                                        </Grid>
-                                    </Grid>
-
                                 </Grid>
+
                             </CardContent>
                         </Card>
                     </Grid>
@@ -362,6 +336,7 @@ const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
                             <CardHeader title="Financial Assistance" />
                             <Divider />
                             <CardContent>
+                                <Grid container spacing={3}>
                                 {
                                     (beneficiary && beneficiary?.extraFA && beneficiary?.extraFA.length > 0) ? 
                                         beneficiary?.extraFA.map((fa, idx) => {
@@ -400,16 +375,39 @@ const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
                                                                 <Grid md={4} xs={4}>
                                                                     <Typography variant="subtitle1">Proof</Typography>
                                                                 </Grid>
-                                                                {
+                                                                <Grid>
+                                                                <Stack direction="row" spacing={2}>
+                                                                    
+                                                                </Stack>
+                                                                </Grid>
+                                                                {/* {
                                                                     fa?.picProof ?
                                                                         (fa?.picProof as any[]).map((proof, index) => {
                                                                             return (                                                                                
-                                                                                <Grid md={8} xs={8}>
-                                                                                    <Link href={proof}>Pic {index}</Link>
-                                                                                </Grid>
+                                                                                <div key={index} style={{ position: 'relative' }}>
+                                                                                    <img src={proof} alt={`proof-${index}`} width={100} height={100} />
+                                                                                </div>
                                                                             )
                                                                         }
                                                                     ) : "No Proof"
+                                                                } */}
+
+                                                                {fa?.picProof ? (
+                                                                    fa?.picProof.map((proof, index) => (
+                                                                        <div key={index} style={{ display: 'inline-block', margin: 4, position: 'relative' }}>
+                                                                        <img
+                                                                            src={proof}
+                                                                            alt={`proof-${index}`}
+                                                                            width={100}
+                                                                            height={100}
+                                                                            style={{ cursor: 'pointer' }}
+                                                                            onClick={() => handleImageClick(proof)}
+                                                                        />
+                                                                        </div>
+                                                                    ))
+                                                                    ) : (
+                                                                    "No Proof"
+                                                                    )
                                                                 }
                                                                 
                                                             </Grid>
@@ -421,6 +419,7 @@ const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
                                         : "No FA Records Exists"
                                     
                                 }
+                                </Grid>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -494,6 +493,17 @@ const ClientComponent: React.FC<ClientComponentProps> = ({ id }) => {
                     </Grid>
                 </Grid>
             )}
+
+            <Dialog open={Boolean(openImage)} onClose={handleClose} maxWidth="md" fullWidth>
+                <DialogTitle>
+                <IconButton aria-label="close" onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+                    <XCircle />
+                </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    {openImage && <img src={openImage} alt="Proof" style={{ width: '100%' }} />}
+                </DialogContent>
+            </Dialog>
         </Stack>
     );
 };

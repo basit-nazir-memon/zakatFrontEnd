@@ -7,6 +7,7 @@ import { Layout } from '@/components/auth/layout';
 import { SignUpForm } from '@/components/dashboard/register/sign-up-form';
 import { AuthGuard } from '@/components/auth/auth-guard';
 import { AddBeneficiaryForm } from '@/components/dashboard/beneficiary/add-beneficiary-form';
+import { AdminGuard } from '@/components/auth/admin-guard';
 
 
 export const metadata = { title: `Add Beneficiary | Beneficiaries | ${config.site.name}` } satisfies Metadata;
@@ -14,7 +15,9 @@ export const metadata = { title: `Add Beneficiary | Beneficiaries | ${config.sit
 export default function Page(): React.JSX.Element {
   return (
       <AuthGuard>
-        < AddBeneficiaryForm/>
+        <AdminGuard>
+          < AddBeneficiaryForm/>
+        </AdminGuard>
       </AuthGuard>
   );
 }

@@ -6,6 +6,7 @@ import { GuestGuard } from '@/components/auth/guest-guard';
 import { Layout } from '@/components/auth/layout';
 import { SignUpForm } from '@/components/dashboard/register/sign-up-form';
 import { AuthGuard } from '@/components/auth/auth-guard';
+import { AdminGuard } from '@/components/auth/admin-guard';
 
 
 export const metadata = { title: `Add User | Auth | ${config.site.name}` } satisfies Metadata;
@@ -13,7 +14,9 @@ export const metadata = { title: `Add User | Auth | ${config.site.name}` } satis
 export default function Page(): React.JSX.Element {
   return (
       <AuthGuard>
-        <SignUpForm />
+        <AdminGuard>
+          <SignUpForm />
+        </AdminGuard>
       </AuthGuard>
   );
 }

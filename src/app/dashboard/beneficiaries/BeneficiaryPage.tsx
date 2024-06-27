@@ -10,11 +10,14 @@ import { AddBeneficiaryButton } from './AddBeneficiaryButton';
 import { BeneficiaryFilters } from '@/components/dashboard/beneficiary/beneficiary-filters';
 import { Beneficiary, BeneficiaryTable } from '@/components/dashboard/beneficiary/beneficiary-table';
 import { envConfig } from '../../../../env';
+import { authClient } from '@/lib/auth/client';
+import { useUser } from '@/hooks/use-user';
 
 export default function BeneficiaryPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [beneficiary, setBeneficiary] = React.useState<Beneficiary[]>([]);
+    const { user, error, isLoading } = useUser();
 
     const paginatedBeneficiary = applyPagination(beneficiary, page, rowsPerPage);
 
@@ -54,9 +57,13 @@ export default function BeneficiaryPage(): React.JSX.Element {
                 </Button>
             </Stack>
             </Stack>
-            <div>
-            <AddBeneficiaryButton />
-            </div>
+            {
+                user?.role == "Admin" ? (
+                <div>
+                    <AddBeneficiaryButton />
+                </div>
+            ) : '' }
+            
         </Stack>
         <BeneficiaryFilters />
         <BeneficiaryTable

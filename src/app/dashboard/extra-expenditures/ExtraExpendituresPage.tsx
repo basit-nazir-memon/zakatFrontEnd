@@ -10,11 +10,13 @@ import { AddExtraExpenditureButton } from './AddExtraExpenditureButton';
 import { envConfig } from '../../../../env';
 import { ExtraExpenditure, ExtraExpenditureTable } from '@/components/dashboard/extraExpenditure/extra-expenditure-table';
 import { ExtraExpensesFilters } from '@/components/dashboard/extraExpenditure/extra-expenditure-filters';
+import { useUser } from '@/hooks/use-user';
 
 export default function ExtraExpendituresPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [users, setUsers] = React.useState<ExtraExpenditure[]>([]);
+    const { user, error, isLoading } = useUser();
 
     const paginatedUsers = applyPagination(users, page, rowsPerPage);
 
@@ -53,9 +55,13 @@ export default function ExtraExpendituresPage(): React.JSX.Element {
                 </Button>
             </Stack>
             </Stack>
-            <div>
-                <AddExtraExpenditureButton />
-            </div>
+            { 
+                user?.role == "Admin" ? (
+                    <div>
+                        <AddExtraExpenditureButton />
+                    </div>
+                ) : '' 
+            }
         </Stack>
         <ExtraExpensesFilters />
         <ExtraExpenditureTable

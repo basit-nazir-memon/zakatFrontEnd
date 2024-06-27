@@ -99,7 +99,7 @@ export function DonorsTable({
               <TableCell>Yearly Amount</TableCell>
               <TableCell>Contact Number</TableCell>
               <TableCell>Created At</TableCell>
-              <TableCell></TableCell>
+              {/* <TableCell></TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -138,9 +138,9 @@ export function DonorsTable({
                   </TableCell>
                   <TableCell>{row.contactNumber}</TableCell>
                   <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <DonorTableButton id={row.id}/>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               );
             })}

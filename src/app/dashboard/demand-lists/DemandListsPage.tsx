@@ -10,11 +10,13 @@ import { envConfig } from '../../../../env';
 import { DemandList, DemandListTable } from '@/components/dashboard/demandList/demand-list-table';
 import { AddDemandListButton } from './AddDemandListsButton';
 import { DemandListFilters } from '@/components/dashboard/demandList/demand-list-filters';
+import { useUser } from '@/hooks/use-user';
 
 export default function DemandListsPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [users, setUsers] = React.useState<DemandList[]>([]);
+    const { user, error, isLoading } = useUser();
 
     const paginatedUsers = applyPagination(users, page, rowsPerPage);
 
@@ -54,9 +56,13 @@ export default function DemandListsPage(): React.JSX.Element {
                 </Button>
             </Stack>
             </Stack>
-            <div>
-                <AddDemandListButton />
-            </div>
+            { 
+                user?.role == "Admin" ? (
+                    <div>
+                        <AddDemandListButton />
+                    </div>
+                ) : ''
+            }
         </Stack>
         <DemandListFilters />
         <DemandListTable

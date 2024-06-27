@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useSelection } from '@/hooks/use-selection';
 import { ExpenseHistoryTableButton } from './expense-history-table-button';
+import { useUser } from '@/hooks/use-user';
 
 export interface ExpenseRecord {
     id: string;
@@ -40,6 +41,7 @@ export function ExpenseTable({
 }: ExpenseTableProps): React.JSX.Element {
     const rowIds = React.useMemo(() => rows.map((record) => `${record.year}-${record.month}`), [rows]);
     const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
+    const { user, error, isLoading } = useUser();
 
     const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
     const selectedAll = rows.length > 0 && selected?.size === rows.length;
@@ -62,7 +64,12 @@ export function ExpenseTable({
                             <TableCell>Year</TableCell>
                             <TableCell>Month</TableCell>
                             <TableCell>Amount</TableCell>
-                            <TableCell>Details</TableCell>
+                            { 
+                                user?.role == "Admin" || user?.role == "Editor" ? (
+                                    <TableCell>Details</TableCell>
+                                ) : ''
+                            }
+
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -73,9 +80,13 @@ export function ExpenseTable({
                                     <TableCell>{row.year}</TableCell>
                                     <TableCell>{row.month}</TableCell>
                                     <TableCell>{row.amount}</TableCell>
-                                    <TableCell>
-                                        <ExpenseHistoryTableButton month={row.month} year={`${row.year}`} />
-                                    </TableCell>
+                                    { 
+                                        user?.role == "Admin" || user?.role == "Editor" ? (
+                                            <TableCell>
+                                                <ExpenseHistoryTableButton month={row.month} year={`${row.year}`} />
+                                            </TableCell>
+                                        ) : ''
+                                    }
                                 </TableRow>
                             );
                         })}

@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { config } from '@/config';
 import { AuthGuard } from '@/components/auth/auth-guard';
 import { AddDemandListForm } from '@/components/dashboard/demandList/add-demand-list-page';
+import { AdminGuard } from '@/components/auth/admin-guard';
 
 
 export const metadata = { title: `Add Demand List | ${config.site.name}` } satisfies Metadata;
@@ -11,7 +12,9 @@ export const metadata = { title: `Add Demand List | ${config.site.name}` } satis
 export default function Page(): React.JSX.Element {
   return (
       <AuthGuard>
-        <AddDemandListForm />
+        <AdminGuard>
+          <AddDemandListForm />
+        </AdminGuard>
       </AuthGuard>
   );
 }

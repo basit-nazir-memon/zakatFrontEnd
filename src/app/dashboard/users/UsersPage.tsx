@@ -10,6 +10,7 @@ import { User, UsersTable } from '@/components/dashboard/users/users-table';
 import { UsersFilters } from '@/components/dashboard/users/users-filters';
 import { AddUserButton } from './AddUserButton';
 import { envConfig } from '../../../../env';
+import { AdminGuard } from '@/components/auth/admin-guard';
 
 export default function UsersPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
@@ -40,33 +41,35 @@ export default function UsersPage(): React.JSX.Element {
     }, []);
 
     return (
-        <Stack spacing={3}>
-        <Stack direction="row" spacing={3}>
-            <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-            <Typography variant="h4">Users</Typography>
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
-                Import
-                </Button>
-                <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-                Export
-                </Button>
+        <AdminGuard>
+            <Stack spacing={3}>
+            <Stack direction="row" spacing={3}>
+                <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
+                <Typography variant="h4">Users</Typography>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                    <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
+                    Import
+                    </Button>
+                    <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
+                    Export
+                    </Button>
+                </Stack>
+                </Stack>
+                <div>
+                <AddUserButton/>
+                </div>
             </Stack>
+            <UsersFilters />
+            <UsersTable
+                count={users.length}
+                page={page}
+                rows={paginatedUsers}
+                rowsPerPage={rowsPerPage}
+                setPage={setPage}
+                setRowsPerPage={setRowsPerPage}
+            />
             </Stack>
-            <div>
-            <AddUserButton/>
-            </div>
-        </Stack>
-        <UsersFilters />
-        <UsersTable
-            count={users.length}
-            page={page}
-            rows={paginatedUsers}
-            rowsPerPage={rowsPerPage}
-            setPage={setPage}
-            setRowsPerPage={setRowsPerPage}
-        />
-        </Stack>
+        </AdminGuard>
     );
 }
 
