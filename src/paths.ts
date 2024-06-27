@@ -11,7 +11,7 @@ export const paths = {
     monthlyExpenditures: '/dashboard/monthly-expenditures',
     addConversionHistory: '/dashboard/conversion-history',
     demandLists: '/dashboard/demand-lists',
-    integrations: '/dashboard/integrations',
+    expenseHistory: '/dashboard/expense-history',
     settings: '/dashboard/settings',
     addUser: '/dashboard/users/add',
     beneficiaries: '/dashboard/beneficiaries',

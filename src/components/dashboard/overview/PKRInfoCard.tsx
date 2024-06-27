@@ -6,12 +6,14 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Money as MoneyIcon } from '@phosphor-icons/react/dist/ssr/Money';
 import { CurrencyDollar as CurrencyDollarIcon } from '@phosphor-icons/react/dist/ssr/CurrencyDollar';
+import { CircularProgress } from '@mui/material';
 
 export interface Props {
   value: number;
+  isPending: boolean;
 }
 
-export function PKRInfoCard({ value }: Props): React.JSX.Element {
+export function PKRInfoCard({ value, isPending}: Props): React.JSX.Element {
 
   return (
     <Card>
@@ -22,7 +24,11 @@ export function PKRInfoCard({ value }: Props): React.JSX.Element {
               <Typography color="text.secondary" variant="overline">
                 Amount In PKR
               </Typography>
+              {isPending ? (
+                <CircularProgress />
+              ) : (
               <Typography variant="h4" color={value < 0 ? 'red' : 'black'}>{value}</Typography>
+              )}
             </Stack>
             <Avatar sx={{ backgroundColor: 'var(--mui-palette-success-main)', height: '56px', width: '56px' }}>
               <MoneyIcon fontSize="var(--icon-fontSize-lg)" />

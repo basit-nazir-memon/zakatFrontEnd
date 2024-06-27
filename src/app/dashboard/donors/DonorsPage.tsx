@@ -60,10 +60,12 @@ export default function DonorsPage(): React.JSX.Element {
         </Stack>
         <DonorsFilters />
         <DonorsTable
-            count={paginatedUsers.length}
+            count={users.length}
             page={page}
             rows={paginatedUsers}
             rowsPerPage={rowsPerPage}
+            setPage={setPage}
+            setRowsPerPage={setRowsPerPage}
         />
         </Stack>
     );

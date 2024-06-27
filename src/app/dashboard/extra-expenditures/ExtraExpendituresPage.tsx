@@ -59,10 +59,12 @@ export default function ExtraExpendituresPage(): React.JSX.Element {
         </Stack>
         <ExtraExpensesFilters />
         <ExtraExpenditureTable
-            count={paginatedUsers.length}
+            count={users.length}
             page={page}
             rows={paginatedUsers}
             rowsPerPage={rowsPerPage}
+            setPage={setPage}
+            setRowsPerPage={setRowsPerPage}
         />
         </Stack>
     );

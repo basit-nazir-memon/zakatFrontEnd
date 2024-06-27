@@ -3,16 +3,7 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
 import Grid from '@mui/material/Unstable_Grid2';
-import dayjs from 'dayjs';
-
-import { config } from '@/config';
-import { LatestOrders } from '@/components/dashboard/overview/latest-orders';
-import { LatestProducts } from '@/components/dashboard/overview/latest-products';
 import { Sales } from '@/components/dashboard/overview/sales';
-import { TasksProgress } from '@/components/dashboard/overview/tasks-progress';
-import { TotalCustomers } from '@/components/dashboard/overview/total-customers';
-import { TotalProfit } from '@/components/dashboard/overview/total-profit';
-import { Traffic } from '@/components/dashboard/overview/traffic';
 import { USDInfoCard } from '@/components/dashboard/overview/USDInfoCard';
 import { PKRInfoCard } from '@/components/dashboard/overview/PKRInfoCard';
 import { CurrentMonthInfoCard } from '@/components/dashboard/overview/CurrMonthInfoCard';
@@ -22,10 +13,14 @@ import { envConfig } from '../../../env';
 
 export default function Page(): React.JSX.Element {
   const [summaryData, setSummaryData] = React.useState({
-    totalAmountUSD: '0',
-    totalAmountPKR: '0',
-    currentMonthTotalExpenses: '0'
+    totalAmountUSD: 0,
+    totalAmountPKR: 0,
+    currentMonthTotalExpenses: 0,
+    sumExpense: 0,
+    expenseHistory: []
   });
+
+  const [pending, setPending] = React.useState(true);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +36,8 @@ export default function Page(): React.JSX.Element {
         }
         const data = await response.json();
         setSummaryData(data);
+
+        setPending(false);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -53,23 +50,20 @@ export default function Page(): React.JSX.Element {
   return (
     <Grid container spacing={3}>
       <Grid lg={3} sm={6} xs={12}>
-        <USDInfoCard value={summaryData?.totalAmountUSD} />
+        <USDInfoCard value={summaryData?.totalAmountUSD} isPending={pending}/>
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-        <PKRInfoCard value={summaryData?.totalAmountPKR} />
+        <PKRInfoCard value={summaryData?.totalAmountPKR} isPending={pending} />
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-        <CurrentMonthInfoCard value={`${summaryData.currentMonthTotalExpenses}`}/>
+        <CurrentMonthInfoCard value={`${summaryData.currentMonthTotalExpenses}`} isPending={pending}/>
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-        <NextMonthInfoCard value='PKR150k' />
+        <NextMonthInfoCard value={`${summaryData.sumExpense}`} isPending={pending} />
       </Grid>
       <Grid lg={12} xs={12}>
         <Sales
-          chartSeries={[
-            { name: 'This year', data: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 20] },
-            { name: 'Last year', data: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13] },
-          ]}
+          chartSeries={summaryData.expenseHistory}
           sx={{ height: '100%' }}
           title='Monthly Expense Chart'
         />

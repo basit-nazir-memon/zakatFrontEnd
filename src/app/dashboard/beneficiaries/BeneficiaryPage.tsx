@@ -60,10 +60,12 @@ export default function BeneficiaryPage(): React.JSX.Element {
         </Stack>
         <BeneficiaryFilters />
         <BeneficiaryTable
-            count={paginatedBeneficiary.length}
+            count={beneficiary.length}
             page={page}
             rows={paginatedBeneficiary}
             rowsPerPage={rowsPerPage}
+            setPage={setPage}
+            setRowsPerPage={setRowsPerPage}
         />
         </Stack>
     );

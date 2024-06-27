@@ -35,6 +35,7 @@ export function AccountInfo({ profile }: AccountInfoProps): React.JSX.Element {
       setAvatar(profile.avatar);
     }
   }, [profile?.avatar]);
+  
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {

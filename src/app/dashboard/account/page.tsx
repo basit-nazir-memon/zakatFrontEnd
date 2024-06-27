@@ -45,6 +45,8 @@ export default function Page(): React.JSX.Element {
         }
 
         const data = await response.json();
+        data.city = data?.address?.city;
+        data.country = data?.address?.country;
         setProfile(data);
 
       } catch (error) {

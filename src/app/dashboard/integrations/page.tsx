@@ -67,6 +67,22 @@ const integrations = [
     installs: 435,
     updatedAt: dayjs().subtract(25, 'minute').subtract(6, 'hour').subtract(6, 'day').toDate(),
   },
+  {
+    id: 'INTEG-002',
+    title: 'GitHub',
+    description: 'GitHub is a web-based hosting service for version control of code using Git.',
+    logo: '/assets/logo-github.png',
+    installs: 835,
+    updatedAt: dayjs().subtract(31, 'minute').subtract(4, 'hour').subtract(5, 'day').toDate(),
+  },
+  {
+    id: 'INTEG-001',
+    title: 'Squarespace',
+    description: 'Squarespace provides software as a service for website building and hosting. Headquartered in NYC.',
+    logo: '/assets/logo-squarespace.png',
+    installs: 435,
+    updatedAt: dayjs().subtract(25, 'minute').subtract(6, 'hour').subtract(6, 'day').toDate(),
+  },
 ] satisfies Integration[];
 
 export default function Page(): React.JSX.Element {
@@ -98,9 +114,9 @@ export default function Page(): React.JSX.Element {
           </Grid>
         ))}
       </Grid>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      {/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Pagination count={3} size="small" />
-      </Box>
+      </Box> */}
     </Stack>
   );
 }

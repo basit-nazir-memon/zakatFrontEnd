@@ -3,29 +3,30 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@mui/material/Button';
-import { Pen, Plus as PlusIcon } from '@phosphor-icons/react';
 import { Eye } from '@phosphor-icons/react/dist/ssr';
+import { Note } from '@phosphor-icons/react';
 
 
-interface BeneficiaryTableButtonProps {
-    id: string;
+interface ExpenseHistoryTableButtonProps {
+    month: string;
+    year: string;
 }
 
 
-export function BeneficiaryTableEditButton({ id }: BeneficiaryTableButtonProps): React.JSX.Element {
+export function ExpenseHistoryTableButton({ month, year }: ExpenseHistoryTableButtonProps): React.JSX.Element {
     const router = useRouter();
 
     const handleClick = () => {
-        router.push(`/dashboard/beneficiaries/edit/${id}`);
+        router.push(`/dashboard/expense-history/${year}/${month}`);
     };
 
     return (
         <Button
-            startIcon={<Pen fontSize="var(--icon-fontSize-md)" />}
+            startIcon={<Note fontSize="var(--icon-fontSize-md)" />}
             variant="contained"
             onClick={handleClick}
             >
-                Edit
+                Details
         </Button>
     );
 }

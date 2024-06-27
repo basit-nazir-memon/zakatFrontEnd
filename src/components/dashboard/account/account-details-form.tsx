@@ -1,18 +1,22 @@
-'use client';
-
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import Divider from '@mui/material/Divider';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Select from '@mui/material/Select';
-import Grid from '@mui/material/Unstable_Grid2';
+import React, { useState } from 'react';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from '@mui/material';
+import { envConfig } from '../../../../env';
 
 const states = [
   { value: 'alabama', label: 'Alabama' },
@@ -38,106 +42,132 @@ interface AccountInfoProps {
 }
 
 export function AccountDetailsForm({ profile }: AccountInfoProps): React.JSX.Element {
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+    const formData = new FormData(event.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch(`${envConfig.url}/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setSuccessMessage('Profile updated successfully.');
+        setErrorMessage(null);
+      } else {
+        throw new Error('Failed to update profile.');
+      }
+    } catch (error) {
+      setSuccessMessage(null);
+      setErrorMessage(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!profile) {
+    return <CircularProgress />;
+  }
+
   return (
-    <form
-      onSubmit={(event) => {
-        event.preventDefault();
-      }}
-    >
-      <Card>
-        <CardHeader subheader="The information can be edited" title="Profile" />
-        <Divider />
-        <CardContent>
-          <Grid container spacing={3}>
-            <Grid md={6} xs={12}>
-              <FormControl fullWidth required>
-                <InputLabel>First name</InputLabel>
-                <OutlinedInput
-                  defaultValue={profile?.firstName || ''}
-                  label="First name"
-                  name="firstName"
-                />
-              </FormControl>
-            </Grid>
-            <Grid md={6} xs={12}>
-              <FormControl fullWidth required>
-                <InputLabel>Last name</InputLabel>
-                <OutlinedInput
-                  defaultValue={profile?.lastName || ''}
-                  label="Last name"
-                  name="lastName"
-                />
-              </FormControl>
-            </Grid>
-            <Grid md={6} xs={12}>
-              <FormControl fullWidth required>
-                <InputLabel>Email address</InputLabel>
-                <OutlinedInput
-                  defaultValue={profile?.email || ''}
-                  label="Email address"
-                  name="email"
-                />
-              </FormControl>
-            </Grid>
-            <Grid md={6} xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>Phone number</InputLabel>
-                <OutlinedInput
-                  defaultValue={profile?.phone || ''}
-                  label="Phone number"
-                  name="phone"
-                  type="tel"
-                />
-              </FormControl>
-            </Grid>
-            <Grid md={6} xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>City</InputLabel>
-                <Select
-                  defaultValue={profile?.city || ''}
-                  label="State"
-                  name="state"
-                  variant="outlined"
-                >
-                  {states.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
+    <>
+      <form onSubmit={onSubmit}>
+        <Card>
+          <CardHeader subheader="The information can be edited" title="Profile" />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth required>
+                  <InputLabel>First name</InputLabel>
+                  <OutlinedInput defaultValue={profile?.firstName || ''} label="First name" name="firstName" />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth required >
+                  <InputLabel>Last name</InputLabel>
+                  <OutlinedInput defaultValue={profile?.lastName || ''} label="Last name" name="lastName" />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth required>
+                  <InputLabel>Email address</InputLabel>
+                  <OutlinedInput defaultValue={profile?.email || ''} label="Email address" name="email" />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth >
+                  <InputLabel>Phone number</InputLabel>
+                  <OutlinedInput
+                    defaultValue={profile?.phone || ''}
+                    label="Phone number"
+                    name="phone"
+                    type="tel"
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth required>
+                  <InputLabel>City</InputLabel>
+                  <OutlinedInput defaultValue={profile?.city || ''} label="City" name="city" />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth required>
+                  <InputLabel>Country</InputLabel>
+                  <OutlinedInput defaultValue={profile?.country || ''} label="Country" name="country" />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth required>
+                  <InputLabel>Gender</InputLabel>
+                  <Select defaultValue={profile?.gender || ''} label="Gender" name="gender" variant="outlined">
+                    <MenuItem key={1} value="Male">
+                      Male
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                    <MenuItem key={2} value="Female">
+                      Female
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
-            <Grid md={6} xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>City</InputLabel>
-                <OutlinedInput
-                  defaultValue={profile?.city || ''}
-                  label="City"
-                  name="city"
-                />
-              </FormControl>
-            </Grid>
-            <Grid md={6} xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>Gender</InputLabel>
-                <Select
-                  defaultValue={profile?.gender || ''}
-                  label="Gender"
-                  name="gender"
-                  variant="outlined"
-                >
-                  <MenuItem key={1} value="Male">Male</MenuItem>
-                  <MenuItem key={2} value="Female">Female</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
-        <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained">Save details</Button>
-        </CardActions>
-      </Card>
-    </form>
+          </CardContent>
+          <Divider />
+          <CardActions sx={{ justifyContent: 'flex-end', padding: '16px' }}>
+            <Button variant="contained" type="submit" disabled={isLoading}>
+              {isLoading ? <CircularProgress size={24} /> : 'Save details'}
+            </Button>
+          </CardActions>
+        </Card>
+      </form>
+
+      {successMessage && (
+        <Snackbar open autoHideDuration={6000} onClose={() => setSuccessMessage(null)}>
+          <Alert onClose={() => setSuccessMessage(null)} severity="success" sx={{ width: '100%' }}>
+            {successMessage}
+          </Alert>
+        </Snackbar>
+      )}
+
+      {errorMessage && (
+        <Snackbar open autoHideDuration={6000} onClose={() => setErrorMessage(null)}>
+          <Alert onClose={() => setErrorMessage(null)} severity="error" sx={{ width: '100%' }}>
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      )}
+    </>
   );
 }

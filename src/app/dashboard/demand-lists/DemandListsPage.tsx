@@ -60,10 +60,12 @@ export default function DemandListsPage(): React.JSX.Element {
         </Stack>
         <DemandListFilters />
         <DemandListTable
-            count={paginatedUsers.length}
+            count={users.length}
             page={page}
             rows={paginatedUsers}
             rowsPerPage={rowsPerPage}
+            setPage={setPage}
+            setRowsPerPage={setRowsPerPage}
         />
         </Stack>
     );

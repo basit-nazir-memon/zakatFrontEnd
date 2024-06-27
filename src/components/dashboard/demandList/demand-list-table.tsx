@@ -56,6 +56,8 @@ interface DemandListTableProps {
   page?: number;
   rows?: DemandList[];
   rowsPerPage?: number;
+  setPage?: (page: number) => void;
+  setRowsPerPage?: (rowsPerPage: number) => void;
 }
 
 export function DemandListTable({
@@ -63,6 +65,8 @@ export function DemandListTable({
   rows = [],
   page = 0,
   rowsPerPage = 0,
+  setPage = () => {},
+  setRowsPerPage = () => {}
 }: DemandListTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((demand) => demand._id);
@@ -72,6 +76,15 @@ export function DemandListTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
+
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+  };
 
   return (
     <Card>
@@ -132,8 +145,8 @@ export function DemandListTable({
       <TablePagination
         component="div"
         count={count}
-        onPageChange={noop}
-        onRowsPerPageChange={noop}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
         page={page}
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}

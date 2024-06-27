@@ -44,6 +44,8 @@ interface DonorsTableProps {
   page?: number;
   rows?: Donor[];
   rowsPerPage?: number;
+  setPage?: (page: number) => void;
+  setRowsPerPage?: (rowsPerPage: number) => void;
 }
 
 export function DonorsTable({
@@ -51,6 +53,8 @@ export function DonorsTable({
   rows = [],
   page = 0,
   rowsPerPage = 0,
+  setPage = () => {},
+  setRowsPerPage = () => {}
 }: DonorsTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((donor) => donor.id);
@@ -60,6 +64,15 @@ export function DonorsTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
+
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+  };
 
   return (
     <Card>
@@ -138,8 +151,8 @@ export function DonorsTable({
       <TablePagination
         component="div"
         count={count}
-        onPageChange={noop}
-        onRowsPerPageChange={noop}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
         page={page}
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}

@@ -39,6 +39,8 @@ interface BeneficiaryTableProps {
   page?: number;
   rows?: Beneficiary[];
   rowsPerPage?: number;
+  setPage?: (page: number) => void;
+  setRowsPerPage?: (rowsPerPage: number) => void;
 }
 
 export function BeneficiaryTable({
@@ -46,6 +48,8 @@ export function BeneficiaryTable({
   rows = [],
   page = 0,
   rowsPerPage = 0,
+  setPage = () => {},
+  setRowsPerPage = () => {}
 }: BeneficiaryTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((user) => user._id);
@@ -55,6 +59,15 @@ export function BeneficiaryTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
+
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+  };
 
   return (
     <Card>
@@ -134,8 +147,8 @@ export function BeneficiaryTable({
       <TablePagination
         component="div"
         count={count}
-        onPageChange={noop}
-        onRowsPerPageChange={noop}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
         page={page}
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}

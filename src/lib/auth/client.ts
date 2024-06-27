@@ -38,6 +38,8 @@ interface ErrorResponse {
 interface SignInResponse {
   token: string;
   avatar: string;
+  name: string;
+  email: string;
 }
 
 interface AuthResponse<T> {
@@ -71,6 +73,9 @@ class AuthClient {
 
       localStorage.setItem('auth-token', data.token);
       localStorage.setItem('avatar', data.avatar);
+      localStorage.setItem('name', data.name);
+      localStorage.setItem('email', data.email);
+
 
       return {};
     } catch (error) {

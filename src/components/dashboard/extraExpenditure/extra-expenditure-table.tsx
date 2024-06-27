@@ -30,6 +30,8 @@ interface ExtraExpenditureTableProps {
   page?: number;
   rows?: ExtraExpenditure[];
   rowsPerPage?: number;
+  setPage?: (page: number) => void;
+  setRowsPerPage?: (rowsPerPage: number) => void;
 }
 
 export function ExtraExpenditureTable({
@@ -37,6 +39,8 @@ export function ExtraExpenditureTable({
   rows = [],
   page = 0,
   rowsPerPage = 0,
+  setPage = () => {},
+  setRowsPerPage = () => {}
 }: ExtraExpenditureTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((expenditure) => expenditure.id);
@@ -46,6 +50,15 @@ export function ExtraExpenditureTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
+
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setPage(newPage);
+};
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+  };
 
   return (
     <Card>
@@ -91,7 +104,7 @@ export function ExtraExpenditureTable({
                   </TableCell>
                   <TableCell>{row.reason}</TableCell>
                   <TableCell>{row.amount}</TableCell>
-                  <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
+                  <TableCell>{dayjs(row.createdAt).format('MM-DD-YYYY')}</TableCell>
                 </TableRow>
               );
             })}
@@ -102,8 +115,8 @@ export function ExtraExpenditureTable({
       <TablePagination
         component="div"
         count={count}
-        onPageChange={noop}
-        onRowsPerPageChange={noop}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
         page={page}
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}

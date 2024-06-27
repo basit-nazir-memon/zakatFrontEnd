@@ -38,6 +38,8 @@ interface ConversionHistoryTableProps {
   page?: number;
   rows?: ConversionHistory[];
   rowsPerPage?: number;
+  setPage?: (page: number) => void;
+  setRowsPerPage?: (rowsPerPage: number) => void;
 }
 
 export function ConversionHistoryTable({
@@ -45,6 +47,8 @@ export function ConversionHistoryTable({
   rows = [],
   page = 0,
   rowsPerPage = 0,
+  setPage = () => {},
+  setRowsPerPage = () => {}
 }: ConversionHistoryTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((history) => history.id);
@@ -54,6 +58,15 @@ export function ConversionHistoryTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
+
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+  };
 
   return (
     <Card>
@@ -124,8 +137,8 @@ export function ConversionHistoryTable({
       <TablePagination
         component="div"
         count={count}
-        onPageChange={noop}
-        onRowsPerPageChange={noop}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
         page={page}
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}

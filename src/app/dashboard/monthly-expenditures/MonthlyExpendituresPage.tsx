@@ -55,10 +55,12 @@ export default function MonthlyExpendituresPage(): React.JSX.Element {
         </Stack>
         <MonthlyExpensesFilters />
         <MonthlyExpensesTable
-            count={paginatedUsers.length}
+            count={users.length}
             page={page}
             rows={paginatedUsers}
             rowsPerPage={rowsPerPage}
+            setPage={setPage}
+            setRowsPerPage={setRowsPerPage}
         />
         </Stack>
     );

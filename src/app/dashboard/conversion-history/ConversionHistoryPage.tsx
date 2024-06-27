@@ -60,10 +60,12 @@ export default function ConversionHistoryPage(): React.JSX.Element {
         </Stack>
         <ConversionHistoryFilters />
         <ConversionHistoryTable
-            count={paginatedUsers.length}
+            count={users.length}
             page={page}
             rows={paginatedUsers}
             rowsPerPage={rowsPerPage}
+            setPage={setPage}
+            setRowsPerPage={setRowsPerPage}
         />
         </Stack>
     );

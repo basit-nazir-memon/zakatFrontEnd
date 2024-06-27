@@ -23,7 +23,7 @@ export default function UsersPage(): React.JSX.Element {
         try {
             const response = await fetch(`${envConfig.url}/users`, {
             headers: {
-                'Authorization': 'Bearer YOUR_JWT_TOKEN_HERE' // Replace with actual token
+                'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
             }
             });
             if (!response.ok) {
@@ -59,10 +59,12 @@ export default function UsersPage(): React.JSX.Element {
         </Stack>
         <UsersFilters />
         <UsersTable
-            count={paginatedUsers.length}
+            count={users.length}
             page={page}
             rows={paginatedUsers}
             rowsPerPage={rowsPerPage}
+            setPage={setPage}
+            setRowsPerPage={setRowsPerPage}
         />
         </Stack>
     );

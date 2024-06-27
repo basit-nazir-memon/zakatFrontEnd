@@ -1,6 +1,6 @@
 import { UserPlus } from '@phosphor-icons/react';
 import type { Icon } from '@phosphor-icons/react/dist/lib/types';
-import { Money } from '@phosphor-icons/react/dist/ssr';
+import { Calendar, ClockCounterClockwise, DotsThreeCircle, HandCoins, ListChecks, Money, UsersFour } from '@phosphor-icons/react/dist/ssr';
 import { ChartPie as ChartPieIcon } from '@phosphor-icons/react/dist/ssr/ChartPie';
 import { GearSix as GearSixIcon } from '@phosphor-icons/react/dist/ssr/GearSix';
 import { PlugsConnected as PlugsConnectedIcon } from '@phosphor-icons/react/dist/ssr/PlugsConnected';
@@ -17,4 +17,11 @@ export const navIcons = {
   users: UsersIcon,
   'add-user': UserPlus,
   'expense': Money,
+  'history': ClockCounterClockwise,
+  'beneficiary': UsersFour,
+  'monthly-expenses': Calendar,
+  'extra': DotsThreeCircle,
+  'donors': HandCoins,
+  'demand': ListChecks,
+
 } as Record<string, Icon>;
