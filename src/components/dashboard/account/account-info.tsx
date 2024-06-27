@@ -46,7 +46,7 @@ export function AccountInfo({ profile }: AccountInfoProps): React.JSX.Element {
       setIsUploading(true);
 
       try {
-        const response = await fetch(`${envConfig.url}/upload-avatar`, {
+        const response = await fetch(`${envConfig.url}/upload-profilePic`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('auth-token')}`, 
