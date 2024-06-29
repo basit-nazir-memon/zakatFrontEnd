@@ -4,11 +4,17 @@ import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 
-export function MonthlyExpensesFilters(): React.JSX.Element {
+interface MonthlyExpensesFiltersProps {
+    searchQuery: string;
+    setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export function MonthlyExpensesFilters({ searchQuery, setSearchQuery }: MonthlyExpensesFiltersProps): React.JSX.Element {
   return (
     <Card sx={{ p: 2 }}>
       <OutlinedInput
-        defaultValue=""
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
         fullWidth
         placeholder="Search monthly expenses"
         startAdornment={

@@ -16,8 +16,19 @@ export default function UsersPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [users, setUsers] = React.useState<User[]>([]);
+    const [searchQuery, setSearchQuery] = React.useState('');
 
-    const paginatedUsers = applyPagination(users, page, rowsPerPage);
+    const filteredUsers = users.filter(user => 
+        user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user?.address?.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user?.address?.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user?.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user?.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const paginatedUsers = applyPagination(filteredUsers, page, rowsPerPage);
 
     React.useEffect(() => {
         const fetchUsers = async () => {
@@ -46,22 +57,22 @@ export default function UsersPage(): React.JSX.Element {
             <Stack direction="row" spacing={3}>
                 <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
                 <Typography variant="h4">Users</Typography>
-                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                {/* <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                     <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
                     Import
                     </Button>
                     <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
                     Export
                     </Button>
-                </Stack>
+                </Stack> */}
                 </Stack>
                 <div>
                 <AddUserButton/>
                 </div>
             </Stack>
-            <UsersFilters />
+            <UsersFilters searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
             <UsersTable
-                count={users.length}
+                count={filteredUsers.length}
                 page={page}
                 rows={paginatedUsers}
                 rowsPerPage={rowsPerPage}

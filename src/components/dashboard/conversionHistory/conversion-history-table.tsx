@@ -28,7 +28,7 @@ export interface ConversionHistory {
   convert: {
     date: Date;
     rate: number;
-    currency: number;
+    currency: string;
   };
   reason: string;
 }

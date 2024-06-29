@@ -30,7 +30,7 @@ interface AccountInfoProps {
 export function AccountInfo({ profile }: AccountInfoProps): React.JSX.Element {
   const [avatar, setAvatar] = React.useState<string | undefined>(profile?.avatar);
   const [isUploading, setIsUploading] = React.useState(false);
-  const { user } = useUser();
+  const { user,  } = useUser();
 
   React.useEffect(() => {
     if (profile?.avatar) {

@@ -16,17 +16,16 @@ export default function ExpenseHistoryPage(): React.JSX.Element {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [expense, setExpense] = React.useState<ExpenseRecord[]>([]);
     const [loading, setLoading] = React.useState(true);
-
-    const paginatedExpenseHistory = applyPagination(expense, page, rowsPerPage);
+    const [searchQuery, setSearchQuery] = React.useState('');
 
     React.useEffect(() => {
         const fetchExpenses = async () => {
-            const token : string | null = localStorage.getItem('auth-token')
+            const token : string | null = localStorage.getItem('auth-token');
             try {
                 const response = await fetch(`${envConfig.url}/expenses-summary`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 if (!response.ok) {
                     throw new Error('Failed to fetch expense history');
@@ -43,38 +42,45 @@ export default function ExpenseHistoryPage(): React.JSX.Element {
         fetchExpenses();
     }, []);
 
+    const filteredExpenses = expense.filter((record) =>
+        record.year.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.month.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const paginatedExpenseHistory = applyPagination(filteredExpenses, page, rowsPerPage);
+
     if (loading) {
         return <CircularProgress />;
     }
 
     return (
         <Stack spacing={3}>
-        <Stack direction="row" spacing={3}>
-            <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-            <Typography variant="h4">Expense History</Typography>
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
-                Import
-                </Button>
-                <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-                Export
-                </Button>
+            <Stack direction="row" spacing={3}>
+                <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
+                    <Typography variant="h4">Expense History</Typography>
+                    {/* <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
+                            Import
+                        </Button>
+                        <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
+                            Export
+                        </Button>
+                    </Stack> */}
+                </Stack>
             </Stack>
-            </Stack>
-        </Stack>
-        <ExpenseHistoryFilters />
-        <ExpenseTable
-            count={expense.length}
-            page={page}
-            rows={paginatedExpenseHistory}
-            rowsPerPage={rowsPerPage}
-            setPage={setPage}
-            setRowsPerPage={setRowsPerPage}
-        />
+            <ExpenseHistoryFilters searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <ExpenseTable
+                count={filteredExpenses.length}
+                page={page}
+                rows={paginatedExpenseHistory}
+                rowsPerPage={rowsPerPage}
+                setPage={setPage}
+                setRowsPerPage={setRowsPerPage}
+            />
         </Stack>
     );
 }
 
 function applyPagination(rows: ExpenseRecord[], page: number, rowsPerPage: number): ExpenseRecord[] {
-  return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 }

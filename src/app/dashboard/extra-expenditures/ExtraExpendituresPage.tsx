@@ -15,67 +15,70 @@ import { useUser } from '@/hooks/use-user';
 export default function ExtraExpendituresPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [users, setUsers] = React.useState<ExtraExpenditure[]>([]);
-    const { user, error, isLoading } = useUser();
-
-    const paginatedUsers = applyPagination(users, page, rowsPerPage);
+    const [extraExpenditures, setExtraExpenditures] = React.useState<ExtraExpenditure[]>([]);
+    const [searchQuery, setSearchQuery] = React.useState('');
+    const { user } = useUser();
 
     React.useEffect(() => {
-        const fetchUsers = async () => {
-        try {
-            const response = await fetch(`${envConfig.url}/extraexpenditures`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
+        const fetchExtraExpenditures = async () => {
+            try {
+                const response = await fetch(`${envConfig.url}/extraexpenditures`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth-token')}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch extra expenditures');
+                }
+                const data = await response.json();
+                setExtraExpenditures(data);
+            } catch (error) {
+                console.error('Error fetching extra expenditures:', error);
             }
-            });
-            if (!response.ok) {
-            throw new Error('Failed to fetch extra expenditures');
-            }
-            const data = await response.json();
-            setUsers(data);
-        } catch (error) {
-            console.error('Error fetching extra expenditures:', error);
-        }
         };
 
-        fetchUsers();
+        fetchExtraExpenditures();
     }, []);
+
+    const filteredExtraExpenditures = extraExpenditures.filter((record) =>
+        record.reason.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const paginatedExtraExpenditures = applyPagination(filteredExtraExpenditures, page, rowsPerPage);
 
     return (
         <Stack spacing={3}>
-        <Stack direction="row" spacing={3}>
-            <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-            <Typography variant="h4">Extra Expenditures</Typography>
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
-                Import
-                </Button>
-                <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-                Export
-                </Button>
-            </Stack>
-            </Stack>
-            { 
-                user?.role == "Admin" ? (
+            <Stack direction="row" spacing={3}>
+                <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
+                    <Typography variant="h4">Extra Expenditures</Typography>
+                    {/* <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
+                            Import
+                        </Button>
+                        <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
+                            Export
+                        </Button>
+                    </Stack> */}
+                </Stack>
+                {user?.role === "Admin" && (
                     <div>
                         <AddExtraExpenditureButton />
                     </div>
-                ) : '' 
-            }
-        </Stack>
-        <ExtraExpensesFilters />
-        <ExtraExpenditureTable
-            count={users.length}
-            page={page}
-            rows={paginatedUsers}
-            rowsPerPage={rowsPerPage}
-            setPage={setPage}
-            setRowsPerPage={setRowsPerPage}
-        />
+                )}
+            </Stack>
+            <ExtraExpensesFilters searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <ExtraExpenditureTable
+                count={filteredExtraExpenditures.length}
+                page={page}
+                rows={paginatedExtraExpenditures}
+                rowsPerPage={rowsPerPage}
+                setPage={setPage}
+                setRowsPerPage={setRowsPerPage}
+            />
         </Stack>
     );
 }
 
 function applyPagination(rows: ExtraExpenditure[], page: number, rowsPerPage: number): ExtraExpenditure[] {
-  return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 }

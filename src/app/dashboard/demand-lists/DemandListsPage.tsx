@@ -15,68 +15,71 @@ import { useUser } from '@/hooks/use-user';
 export default function DemandListsPage(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [users, setUsers] = React.useState<DemandList[]>([]);
-    const { user, error, isLoading } = useUser();
-
-    const paginatedUsers = applyPagination(users, page, rowsPerPage);
+    const [demandList, setDemandList] = React.useState<DemandList[]>([]);
+    const [searchQuery, setSearchQuery] = React.useState('');
+    const { user } = useUser();
 
     React.useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchDemandList = async () => {
             const token = localStorage.getItem('auth-token');
-        try {
-            const response = await fetch(`${envConfig.url}/demand-lists`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
+            try {
+                const response = await fetch(`${envConfig.url}/demand-lists`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch demand lists');
+                }
+                const data = await response.json();
+                setDemandList(data);
+            } catch (error) {
+                console.error('Error fetching demand lists:', error);
             }
-            });
-            if (!response.ok) {
-            throw new Error('Failed to fetch demand lists');
-            }
-            const data = await response.json();
-            setUsers(data);
-        } catch (error) {
-            console.error('Error fetching demand lists:', error);
-        }
         };
 
-        fetchUsers();
+        fetchDemandList();
     }, []);
+
+    const filteredDemandList = demandList.filter((record) =>
+        record.Reason.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const paginatedDemandList = applyPagination(filteredDemandList, page, rowsPerPage);
 
     return (
         <Stack spacing={3}>
-        <Stack direction="row" spacing={3}>
-            <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-            <Typography variant="h4">Demand Lists</Typography>
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
-                Import
-                </Button>
-                <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-                Export
-                </Button>
-            </Stack>
-            </Stack>
-            { 
-                user?.role == "Admin" ? (
+            <Stack direction="row" spacing={3}>
+                <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
+                    <Typography variant="h4">Demand Lists</Typography>
+                    {/* <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                        <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
+                            Import
+                        </Button>
+                        <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
+                            Export
+                        </Button>
+                    </Stack> */}
+                </Stack>
+                {user?.role === "Admin" && (
                     <div>
                         <AddDemandListButton />
                     </div>
-                ) : ''
-            }
-        </Stack>
-        <DemandListFilters />
-        <DemandListTable
-            count={users.length}
-            page={page}
-            rows={paginatedUsers}
-            rowsPerPage={rowsPerPage}
-            setPage={setPage}
-            setRowsPerPage={setRowsPerPage}
-        />
+                )}
+            </Stack>
+            <DemandListFilters searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <DemandListTable
+                count={filteredDemandList.length}
+                page={page}
+                rows={paginatedDemandList}
+                rowsPerPage={rowsPerPage}
+                setPage={setPage}
+                setRowsPerPage={setRowsPerPage}
+            />
         </Stack>
     );
 }
 
 function applyPagination(rows: DemandList[], page: number, rowsPerPage: number): DemandList[] {
-  return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 }

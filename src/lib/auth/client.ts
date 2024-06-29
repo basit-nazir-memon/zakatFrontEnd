@@ -4,11 +4,11 @@ import type { User } from '@/types/user';
 import { envConfig } from '../../../env';
 
 let user = {
-  id: 'USR-000',
-  avatar: '/assets/avatar.png',
-  firstName: 'Sofia',
-  lastName: 'Rivers',
-  email: 'sofia@devias.io',
+  id: '',
+  avatar: '',
+  firstName: '',
+  lastName: '',
+  email: '',
   role: 'Viewer'
 } satisfies User;
 
@@ -108,6 +108,38 @@ class AuthClient {
       return { data: null };
     }
 
+    if (token && user.id == ''){
+      try {
+        const response: Response = await fetch(`${envConfig.url}/user/me`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+        });
+  
+        if (!response.ok) {
+          return { data: null };
+        }
+  
+        const data: SignInResponse = await response.json() as SignInResponse;
+
+        user.id = data.id;
+        user.avatar = data.avatar;
+        user.email = data.email;
+        user.firstName = data.firstName;
+        user.lastName = data.lastName;
+        user.role = data.role;
+        
+        return { data: user };
+
+      } catch (error) {
+        if (error instanceof Error) {
+          return { data: null };
+        }
+        return { data: null };
+      }
+    }
+
     return { data: user };
   }
 
@@ -121,6 +153,10 @@ class AuthClient {
 
   isAdminOREditor() {
     return (user.role == "Admin" || user.role == "Editor");
+  }
+
+  setAvatar(avatar : string){
+    user.avatar = avatar;
   }
 
   async signOut(): Promise<AuthResponse<void>> {
