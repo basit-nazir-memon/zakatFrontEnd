@@ -32,6 +32,12 @@ export interface ResetPasswordParams {
   email: string;
 }
 
+export interface CreateNewPasswordParams {
+  newPassword: string;
+  confirmPassword : string;
+  token: string;
+}
+
 interface ErrorResponse {
   msg: string;
 }
@@ -44,6 +50,11 @@ interface SignInResponse {
   lastName: string;
   email: string;
   role: string;
+}
+
+
+interface ResetErrorResponse {
+  error: string;
 }
 
 interface AuthResponse<T> {
@@ -93,8 +104,56 @@ class AuthClient {
     }
   }
 
-  async resetPassword(_: ResetPasswordParams): Promise<AuthResponse<void>> {
-    return { error: 'Password reset not implemented' };
+  async resetPassword({ email } : ResetPasswordParams) {
+    try {
+      const response: Response = await fetch(`${envConfig.url}/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const errorData: ErrorResponse = await response.json() as ErrorResponse;
+        return { error: errorData.msg || 'Email Not Registered' };
+      }
+
+      
+
+      return { error: null };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Server error. Please try again later.' };
+    }
+  }
+
+
+  async createNewPassword({ newPassword, confirmPassword, token } : CreateNewPasswordParams) {
+    try {
+
+      const response: Response = await fetch(`${envConfig.url}/reset-password/${token}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ newPassword, confirmPassword }),
+      });
+
+      if (!response.ok) {
+        const errorData: ResetErrorResponse = await response.json() as ResetErrorResponse;
+        return { error: errorData.error || 'Invalid Token' };
+      }
+
+      return { error: null };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { error: error.message };
+      }
+      return { error: 'Server error. Please try again later.' };
+    }
   }
 
   async updatePassword(_: ResetPasswordParams): Promise<AuthResponse<void>> {

@@ -23,6 +23,7 @@ const defaultValues = { email: '' } satisfies Values;
 
 export function ResetPasswordForm(): React.JSX.Element {
   const [isPending, setIsPending] = React.useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
 
   const {
     control,
@@ -43,9 +44,9 @@ export function ResetPasswordForm(): React.JSX.Element {
         return;
       }
 
-      setIsPending(false);
+      setSuccessMessage("Password Reset Link Sent to Your Email")
 
-      // Redirect to confirm password reset
+      setIsPending(false);
     },
     [setError]
   );
@@ -61,13 +62,14 @@ export function ResetPasswordForm(): React.JSX.Element {
             render={({ field }) => (
               <FormControl error={Boolean(errors.email)}>
                 <InputLabel>Email address</InputLabel>
-                <OutlinedInput {...field} label="Email address" type="email" />
+                <OutlinedInput {...field} label="Email address" type="email" disabled={successMessage} />
                 {errors.email ? <FormHelperText>{errors.email.message}</FormHelperText> : null}
               </FormControl>
             )}
           />
           {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-          <Button disabled={isPending} type="submit" variant="contained">
+          {successMessage ? <Alert color="success">{successMessage}</Alert> : null}
+          <Button disabled={isPending || successMessage} type="submit" variant="contained">
             Send recovery link
           </Button>
         </Stack>
