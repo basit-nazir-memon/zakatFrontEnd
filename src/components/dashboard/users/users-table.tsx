@@ -17,14 +17,15 @@ import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 
 import { useSelection } from '@/hooks/use-selection';
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
+import { envConfig } from '../../../../env';
 
 function noop(): void {
   // do nothing
 }
 
 export interface User {
-  id: string;
+  _id: string;
   avatar: string;
   firstName: string;
   lastName: string;
@@ -43,6 +44,7 @@ interface UsersTableProps {
   rowsPerPage?: number;
   setPage?: (page: number) => void;
   setRowsPerPage?: (rowsPerPage: number) => void;
+  setRows?: (rows: User[]) => void;
 }
 
 export function UsersTable({
@@ -51,13 +53,15 @@ export function UsersTable({
   page = 0,
   rowsPerPage = 0,
   setPage = () => {},
-  setRowsPerPage = () => {}
+  setRowsPerPage = () => {},
+  setRows = () => {}
 }: UsersTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
-    return rows.map((user) => user.id);
+    return rows.map((user) => user._id);
   }, [rows]);
 
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
+  const [loadingUserId, setLoadingUserId] = React.useState<string | null>(null);
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
@@ -67,8 +71,39 @@ export function UsersTable({
   };
 
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleClick = async (userId: string) => {
+    const token = localStorage.getItem('auth-token');
+    setLoadingUserId(userId);
+
+    try {
+      const response = await fetch(`${envConfig.url}/toggle-block/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        console.log('Response from server:', response.msg);
+      } else {
+        // Update the user data in the local state
+        const newRows = rows.map((user) =>
+          user._id === userId ? { ...user, blocked: !user.blocked } : user
+        );
+
+        setRows(newRows);
+      }
+
+    } catch (error) {
+      console.error('Error updating blocked status:', error);
+    } finally {
+      setLoadingUserId(null);
+    }
   };
 
   return (
@@ -103,18 +138,18 @@ export function UsersTable({
           </TableHead>
           <TableBody>
             {rows.map((row) => {
-              const isSelected = selected?.has(row.id);
+              const isSelected = selected?.has(row._id);
 
               return (
-                <TableRow hover key={row.id} selected={isSelected}>
+                <TableRow hover key={row._id} selected={isSelected}>
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={isSelected}
                       onChange={(event) => {
                         if (event.target.checked) {
-                          selectOne(row.id);
+                          selectOne(row._id);
                         } else {
-                          deselectOne(row.id);
+                          deselectOne(row._id);
                         }
                       }}
                     />
@@ -141,7 +176,16 @@ export function UsersTable({
                   <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
 
                   <TableCell>
-                    <Button>{row.blocked ? 'Unblock' : 'Block'}</Button>
+                    <Button 
+                      onClick={() => handleClick(row._id)}
+                      disabled={loadingUserId === row._id}
+                    >
+                      {loadingUserId === row._id ? (
+                        <CircularProgress size={24} />
+                      ) : (
+                        row.blocked ? 'Unblock' : 'Block'
+                      )}
+                    </Button>
                   </TableCell>
                 </TableRow>
               );

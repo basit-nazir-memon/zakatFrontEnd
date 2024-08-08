@@ -78,6 +78,7 @@ export default function UsersPage(): React.JSX.Element {
                 rowsPerPage={rowsPerPage}
                 setPage={setPage}
                 setRowsPerPage={setRowsPerPage}
+                setRows={setUsers}
             />
             </Stack>
         </AdminGuard>
