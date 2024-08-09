@@ -159,7 +159,7 @@ export function MonthlyExpensesTable({
               <TableCell>Area</TableCell>
               <TableCell>Expense</TableCell>
               <TableCell>Type</TableCell>
-              <TableCell>Payment</TableCell>
+              { user?.role == "Admin" ? <TableCell>Payment</TableCell> : '' }
             </TableRow>
           </TableHead>
           <TableBody>
