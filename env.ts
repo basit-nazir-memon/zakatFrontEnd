@@ -3,6 +3,6 @@ export interface EnvConfig {
 }
 
 export const envConfig: EnvConfig = {
-// url: 'http://localhost:5000'
-url: 'https://zakatbackend.onrender.com'
+    // url: 'http://localhost:5000'
+    url: 'https://zakatbackend.onrender.com'
 };

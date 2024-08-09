@@ -25,7 +25,7 @@ export default function MonthlyExpendituresPage(): React.JSX.Element {
         user.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.area.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.contact.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.monthlyExpense.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        user.expense.toString().toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const paginatedUsers = applyPagination(filteredUsers, page, rowsPerPage);
@@ -82,14 +82,16 @@ export default function MonthlyExpendituresPage(): React.JSX.Element {
         doc.text(`Generated on: ${dateTimeString}`, 14, 18);
 
         doc.autoTable({
-            head: [['Name', 'CNIC', 'Contact', 'City', 'Area', 'Monthly Expense']],
+            head: [['Name', 'CNIC', 'Contact', 'City', 'Area', 'Expense', 'Type', 'Status']],
             body: filteredUsers.map(user => [
                 user.name,
                 user.cnic,
                 user.contact,
                 user.city,
                 user.area,
-                user.monthlyExpense
+                user.expense, 
+                user.type,
+                user.isPaid ? 'Paid' : 'Not Paid'
             ]),
             startY: 25
         });
@@ -123,6 +125,7 @@ export default function MonthlyExpendituresPage(): React.JSX.Element {
             rowsPerPage={rowsPerPage}
             setPage={setPage}
             setRowsPerPage={setRowsPerPage}
+            setRows={setUsers}
         />
         </Stack>
     );

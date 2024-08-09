@@ -12,6 +12,13 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useSelection } from '@/hooks/use-selection';
+import { useUser } from '@/hooks/use-user';
+import { Button, CircularProgress } from '@mui/material';
+import { Money, Share, X } from '@phosphor-icons/react/dist/ssr';
+import { Check } from '@phosphor-icons/react';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { envConfig } from '../../../../env';
 
 function noop(): void {
   // do nothing
@@ -24,7 +31,9 @@ export interface Beneficiary {
   contact: string;
   city: string;
   area: string;
-  monthlyExpense: number;
+  expense: number;
+  type: string;
+  isPaid: boolean;
 }
 
 interface MonthlyExpensesTableProps {
@@ -34,7 +43,16 @@ interface MonthlyExpensesTableProps {
   rowsPerPage?: number;
   setPage?: (page: number) => void;
   setRowsPerPage?: (rowsPerPage: number) => void;
+  setRows?: (beneficiaries: Beneficiary[]) => void;
 }
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 export function MonthlyExpensesTable({
   count = 0,
@@ -42,7 +60,8 @@ export function MonthlyExpensesTable({
   page = 0,
   rowsPerPage = 0,
   setPage = () => {},
-  setRowsPerPage = () => {}
+  setRowsPerPage = () => {},
+  setRows = () => {}
 }: MonthlyExpensesTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((beneficiary) => beneficiary.id);
@@ -52,6 +71,23 @@ export function MonthlyExpensesTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
+  const { user, error, isLoading } = useUser();
+  const [message, setMessage] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState<string | null>(null);
+
+  const handleClickSnackbar = () => {
+    setOpen(true);
+  };
+
+  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
 
   const handlePageChange = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -61,6 +97,41 @@ export function MonthlyExpensesTable({
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
   };
+
+  const handleClick = async (beneficiaryId: string) => {
+    try {
+      setLoading(beneficiaryId);  // Start loading
+      const token = localStorage.getItem('auth-token');
+      const response = await fetch(`${envConfig.url}/beneficiaries/pay`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ beneficiaryId }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Payment failed');
+      }
+  
+      handleClickSnackbar();
+      setMessage("Payment Successful");
+      
+      // Update the state to set isPaid to true for the respective beneficiary
+      const newRows = rows.map((row) =>
+        row.id === beneficiaryId ? { ...row, isPaid: true } : row
+      );
+      setRows(newRows);
+  
+    } catch (error) {
+      handleClickSnackbar();
+      setMessage('Error Occurred: ' + error?.message);
+    } finally {
+      setLoading(null);  // Stop loading
+    }
+  };
+  
 
   return (
     <Card>
@@ -86,7 +157,9 @@ export function MonthlyExpensesTable({
               <TableCell>Contact</TableCell>
               <TableCell>City</TableCell>
               <TableCell>Area</TableCell>
-              <TableCell>Monthly Expense</TableCell>
+              <TableCell>Expense</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>Payment</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -112,7 +185,35 @@ export function MonthlyExpensesTable({
                   <TableCell>{row.contact}</TableCell>
                   <TableCell>{row.city}</TableCell>
                   <TableCell>{row.area}</TableCell>
-                  <TableCell>{row.monthlyExpense}</TableCell>
+                  <TableCell>{row.expense}</TableCell>
+                  <TableCell>{row.type}</TableCell>
+                  {
+                    user?.role == "Admin" ? 
+                        row?.type == "None" ? (
+                          <TableCell>
+                            <Button
+                              startIcon={<X fontSize="var(--icon-fontSize-md)" />}
+                              variant="contained"
+                              disabled
+                            >
+                              Paid
+                            </Button>
+                          </TableCell>
+                        ) : (
+                          <TableCell>
+                            <Button
+                              startIcon={row.isPaid ? <Check fontSize="var(--icon-fontSize-md)" /> : <Share fontSize="var(--icon-fontSize-md)" />}
+                              variant="contained"
+                              onClick={() => handleClick(row.id)}
+                              disabled={row.isPaid || loading === row.id}
+                            >
+                              {loading === row.id ? (
+                                <CircularProgress size={24} />
+                              ) : row.isPaid ? "Paid" : "Pay"}
+                            </Button>
+                          </TableCell>
+                        ) : ''
+                  }
                 </TableRow>
               );
             })}
@@ -129,6 +230,17 @@ export function MonthlyExpensesTable({
         rowsPerPage={rowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}
       />
+
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={message.includes("Error") ? "error" : "success"} sx={{ width: '100%' }}>
+          {message}
+        </Alert>
+      </Snackbar>
+
     </Card>
   );
 }
